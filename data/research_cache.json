@@ -1,0 +1,223 @@
+{
+  "hdfc_millennia": {
+    "card_id": "hdfc_millennia",
+    "card_name": "HDFC Millennia Credit Card",
+    "query": "Research the HDFC Millennia Credit Card. Find its annual fee, renewal fee, cashback rates, eligibility criteria, and fee waiver conditions using official HDFC Bank sources. Clearly identify the source URLs and return null for any fee that cannot be verified from the evidence.",
+    "raw_answer": "# HDFC Millennia Credit Card Research Report\n\nHere is the fee, cashback, and eligibility analysis for the HDFC Millennia Credit Card based on official HDFC Bank sources.\n\n### Fees and Charges\n* **Joining/Annual Fee:** ₹1,000 plus applicable taxes ([Source](https://www.hdfc.bank.in/credit-cards/millennia-credit-card)).\n* **Renewal Fee:** ₹1,000 plus applicable taxes ([Source](https://v.hdfc.bank.in/content/dam/hdfc-aem-microsites/millennia-microsite1/pdfs/CreditCard.pdf)).\n* **Fee Waiver Conditions:** The renewal fee is waived if you spend ₹1,00,000 or more in a year/12 months prior to the renewal date ([Source](https://www.hdfc.bank.in/credit-cards/millennia-credit-card-fees-and-charges), [Source](https://v.hdfc.bank.in/content/dam/hdfc-aem-microsites/millennia-microsite1/pdfs/CreditCard.pdf)).\n\n### Cashback Rates\n* **Cashback Features:** Offers up to 5% cashback on specific online platforms (such as Amazon) and welcome vouchers worth ₹1,000 ([Source](https://vocal.media/journal/hdfc-millennia-credit-card-features-benefits-and-charges-2025)).\n\n### Eligibility Criteria\n* ⚠️ **Specific Criteria:** Specific income, age, or employment criteria are not explicitly detailed in the provided official text snippets. Applicants are required to check their eligibility through the online eligibility calculator on the official HDFC website ([Source](https://www.hdfc.bank.in/credit-cards)).\n\n***\n\n*Disclaimer: Please verify all fees, charges, and terms directly with HDFC Bank before applying, as policies are subject to change.*",
+    "sources": [
+      {
+        "title": "Check Millennia Credit Card Fees & Charges",
+        "url": "https://www.hdfc.bank.in/credit-cards/millennia-credit-card/fees-and-charges",
+        "snippet": "Millennia Credit Card Fees & Charges · Renewal fee waived on spending ₹1 lakh or more in a year before renewal date. · Click here(opens in a new tab) for details ..."
+      },
+      {
+        "title": "Apply for Millennia Credit Card & Get CashBacks on Spends",
+        "url": "https://www.hdfc.bank.in/credit-cards/millennia-credit-card",
+        "snippet": "The Millennia Credit Card comes with an annual membership fee of ₹1000 plus applicable taxes. However, you can get the renewal fee waived by spending ₹1, ..."
+      },
+      {
+        "title": "MILLENNIA CREDIT CARD.",
+        "url": "https://v.hdfc.bank.in/content/dam/hdfc-aem-microsites/millennia-microsite1/pdfs/CreditCard.pdf",
+        "snippet": "Renewal Membership Fee – Rs. 1000/- + Applicable Taxes. Spend Rs. 1,00,000 in 12 Months and get Renewal Fee waived for next renewal year. D) How can a ..."
+      },
+      {
+        "title": "HDFC Millennia Credit Card Charges, Fees & Joining Fee",
+        "url": "https://www.airtel.in/finance/credit-card/hdfc-bank-millennia-credit-card-fees-charges",
+        "snippet": "Check HDFC Millennia Credit Card charges, annual fee, joining fee, interest rates, and fee waiver details to understand the card's complete cost structure."
+      },
+      {
+        "title": "Hdfc millenia credit card renewal fee : r/CreditCardsIndia",
+        "url": "https://www.reddit.com/r/CreditCardsIndia/comments/1d43uks/hdfc_millenia_credit_card_renewal_fee/",
+        "snippet": "In the bill cycle of May '24, I have been charged with the annual renewal fee of 1000+GST. Is there any way of waiving off the renewal fee as I ..."
+      },
+      {
+        "title": "Apply for Credit Card Online & Get Instant Approval",
+        "url": "https://www.hdfc.bank.in/credit-cards",
+        "snippet": "Apply for Credit Card Online · 1. Go to our website > > Credit Card page. · 2. Check your eligibility through the online eligibility calculator. · 3. Get the right ..."
+      },
+      {
+        "title": "HDFC Millennia Credit Card Lifetime FREE (2025 Review) ...",
+        "url": "https://www.youtube.com/watch?v=nefyXQM3tas",
+        "snippet": "Joining & Annual Fees of HDFC Millennia Credit Card 5. Eligibility Criteria to apply HDFC Millennia Credit Card 6. Rewards points structure ..."
+      },
+      {
+        "title": "HDFC Millennia Credit Card: Features, Benefits & Charges ...",
+        "url": "https://vocal.media/journal/hdfc-millennia-credit-card-features-benefits-and-charges-2025",
+        "snippet": "Cashback up to 5% on online platforms; Welcome vouchers worth ₹1,000 · You earn 5% cashback on: Amazon · Joining Fee: ₹1,000 + GST; Annual Fee: ₹1,000 + GST ( ..."
+      }
+    ],
+    "retrieved_at": "2026-10-20T15:02:22.023975+00:00",
+    "structured": {
+      "annual_fee_inr": 1000,
+      "joining_fee_inr": 1000,
+      "fee_waiver_condition": "Renewal fee waived if you spend Rs. 1,00,000 or more in 12 months prior to the renewal date.",
+      "reward_unit": null,
+      "cashback_rates": null,
+      "reward_points_per_100_inr": null,
+      "point_value_inr": null,
+      "monthly_cashback_cap_inr": null,
+      "eligibility": {
+        "min_age": null,
+        "max_age": null,
+        "min_income_monthly_inr": null,
+        "credit_score_min": null,
+        "employment_types": null
+      },
+      "exclusions": null,
+      "key_benefits": [
+        "Welcome vouchers worth Rs. 1,000"
+      ],
+      "uncertainty_flags": [
+        "cashback_rates"
+      ]
+    }
+  },
+  "icici_amazon_pay": {
+    "card_id": "icici_amazon_pay",
+    "card_name": "Amazon Pay ICICI Credit Card",
+    "query": "What are the exact reward rates for Amazon Pay ICICI Credit Card in 2024?",
+    "raw_answer": "Here is the breakdown of the reward rates for the Amazon Pay ICICI Credit Card based on official ICICI Bank sources:\n\n### **Amazon Pay ICICI Credit Card Reward Structure**\n\n* **Amazon.in Shopping Spends:**\n  * **Amazon Prime Members:** Earn **5% unlimited cashback** (in the form of Amazon Pay balance) on purchases made on Amazon India [Source: [ICICI Bank](https://www.icicibank.com/about-us/news-room/2025/amazon-pay-and-icici-bank-renew-partnership-enhance-indias-most-adopted-co-branded-credit-card), [ICICI Bank Blogs](https://www.icicibank.com/blogs/credit-card/shopping-credit-card)].\n  * **Non-Prime Members:** Earn **3% cashback** on purchases made on Amazon India [Source: [ICICI Bank](https://www.icicibank.com/about-us/news-room/2018/news-icici-bank-launch-cobranded-credit-card-with-amazon), [ICICI Bank FAQs](https://www.icicibank.com/Personal-Banking/faq/card/amazon-pay-faq.page?)].\n\n* **Digital Categories on Amazon.in:**\n  * **All Customers:** Earn **2% back** on digital category spends on Amazon.in (such as utility bill payments, recharges, etc.) [Source: [ICICI Bank](https://www.icicibank.com/about-us/news-room/2020/news-amazon-pay-icici-bank-credit-card-is-fastest-to-cross-1-million-milestone)].\n\n* **Travel Bookings:**\n  * Earn **5% unlimited rewards** on eligible travel bookings [Source: [ICICI Bank](https://www.icicibank.com/about-us/news-room/2025/amazon-pay-and-icici-bank-renew-partnership-enhance-indias-most-adopted-co-branded-credit-card)]. \n\n*Disclaimer: Reward rates, terms, and conditions are subject to change. Please verify the latest details directly with ICICI Bank before applying.*",
+    "sources": [
+      {
+        "title": "Amazon Pay ICICI Bank Credit Card Partnership Renewed",
+        "url": "https://www.icicibank.com/about-us/news-room/2025/amazon-pay-and-icici-bank-renew-partnership-enhance-indias-most-adopted-co-branded-credit-card",
+        "snippet": "The Amazon Pay ICICI Bank Credit Card lowers forex fees, continues 5% unlimited rewards on shopping and travel bookings. September 11, 2025."
+      },
+      {
+        "title": "Amazon Pay ICICI Bank credit card is fastest to cross 1 ...",
+        "url": "https://www.icicibank.com/about-us/news-room/2020/news-amazon-pay-icici-bank-credit-card-is-fastest-to-cross-1-million-milestone",
+        "snippet": "5% reward points for Amazon Prime members and 3% for all other customers shopping on Amazon.in; 2% for spends on digital categories on Amazon.in such as bill ..."
+      },
+      {
+        "title": "ICICI Bank launches co-branded credit card with Amazon",
+        "url": "https://www.icicibank.com/about-us/news-room/2018/news-icici-bank-launches-cobranded-credit-card-with-amazon",
+        "snippet": "5% for Amazon Prime members and 3% back for all other customers for shopping on Amazon.in · 2% for all customers on spends on digital categories on Amazon.in ..."
+      },
+      {
+        "title": "FAQs Amazon Pay Credit Card - Frequently Asked Questions",
+        "url": "https://www.icicibank.com/Personal-Banking/faq/card/amazon-pay-faq.page?",
+        "snippet": "Amazon Prime members can earn 5% back on purchases carried out on Amazon India. Non-Prime cardholders can earn 3% back on all products. Earn 2% back on 100+ ..."
+      },
+      {
+        "title": "Amazon Pay ICICI Bank credit card on-boards over two ...",
+        "url": "https://www.icicibank.com/about-us/news-room/2021/news-amazon-pay-icici-bank-credit-card-onboards-over-two-million-customers",
+        "snippet": "Amazon Prime members earn 5% reward points and all other customers shopping on Amazon.in earn 3% reward points; Offers 2% reward points for spends on digital ..."
+      },
+      {
+        "title": "Best Credit Cards for Online Shopping",
+        "url": "https://www.icicibank.com/blogs/credit-card/shopping-credit-card",
+        "snippet": "This card offers 5% cashback in the form of Amazon Pay balance to Prime members and 3% cashback to Non-Prime members. Rs 6,500 + GST or passport"
+      },
+      {
+        "title": "5 Important Points While Spending on a Cashback Credit ...",
+        "url": "https://www.icicibank.com/blogs/credit-card/5-important-points-while-spending-on-a-cashback-credit-card",
+        "snippet": "ICICI Bank's Amazon Pay Credit Card provides up to 5% cashback on Amazon India spends … 1% cashback, you will get Rs 10/Rs 1000 spent. Cashbacks are paid ..."
+      },
+      {
+        "title": "Credit Card FAQs",
+        "url": "https://www.icicibank.com/personal-banking/cards/credit-card/faqs",
+        "snippet": "24/7 Toll free number 1800 1080 … welcome benefits such as reward points, vouchers or other introductory offers. The exact charges can vary by Card variant and ..."
+      }
+    ],
+    "retrieved_at": "2026-10-20T14:21:35.183232+00:00",
+    "structured": {
+      "annual_fee_inr": null,
+      "joining_fee_inr": null,
+      "fee_waiver_condition": null,
+      "reward_unit": "percent_cashback_amazon_pay_balance",
+      "cashback_rates": {
+        "online_shopping": 5.0,
+        "travel": 5.0,
+        "bill_payments": 2.0
+      },
+      "reward_points_per_100_inr": null,
+      "point_value_inr": null,
+      "monthly_cashback_cap_inr": null,
+      "eligibility": {
+        "min_age": null,
+        "max_age": null,
+        "min_income_monthly_inr": null,
+        "credit_score_min": null,
+        "employment_types": null
+      },
+      "exclusions": null,
+      "key_benefits": null,
+      "uncertainty_flags": []
+    }
+  },
+  "research__what_is_the_minimum_income_required_for": {
+    "card_id": "research__what_is_the_minimum_income_required_for",
+    "card_name": "What is the minimum income required for HDFC Regalia Credit ",
+    "query": "What is the minimum income required for HDFC Regalia Credit Card?",
+    "raw_answer": "### HDFC Regalia / Regalia Gold Credit Card Income Eligibility\n\nAs an expert credit card analyst, here is the breakdown of the minimum income required for the HDFC Regalia credit card variants based on official guidelines:\n\n#### **HDFC Regalia / Regalia Gold (Retail)**\n* **Salaried Individuals:** Net monthly income greater than **₹1,00,000** per month ([HDFC Regalia Eligibility](https://www.hdfcbank.com/personal/pay/cards/credit-cards/regalia/eligibility)). \n  * *Note:* For government employees, the income criteria specifies at least ₹1 lakh ([HDFC Regalia Gold Eligibility](https://www.hdfcbank.com/personal/pay/cards/credit-cards/regalia-gold-credit-card/eligibility)). ⚠️\n* **Self-Employed Individuals:** Requires a strong Income Tax Return (ITR). While specific self-employed monthly thresholds for standard Regalia are generalized around ₹1,00,000 p.m. / high ITRs ([Paisabazaar HDFC Eligibility](https://www.paisabazaar.com/hdfc-bank/credit-card-eligibility/)), business variants specify an ITR of **> ₹12 lakh annually** ([Business Regalia Eligibility](https://www.hdfcbank.com/personal/pay/cards/business-credit-cards/business-regalia/eligibility)). ⚠️\n\n#### **Additional General Criteria**\n* **Age Requirements:** \n  * Salaried: 21 to 60 years ([HDFC Regalia Eligibility](https://www.hdfcbank.com/personal/pay/cards/credit-cards/regalia/eligibility)).\n  * Self-Employed: 21 to 65 years ([HDFC Regalia Eligibility](https://www.hdfcbank.com/personal/pay/cards/credit-cards/regalia/eligibility)).\n\n***\n\n*Disclaimer: Please verify the final eligibility criteria and income requirements directly with HDFC Bank before applying, as policies are subject to change.*",
+    "sources": [
+      {
+        "title": "Check Regalia Gold Credit Card Eligibility",
+        "url": "https://www.hdfcbank.com/personal/pay/cards/credit-cards/regalia-gold-credit-card/eligibility",
+        "snippet": "To qualify for the HDFC Bank Regalia Gold Credit Card, salaried individuals must have a net monthly income of at least ₹1 lakh for government employees and ₹1. ..."
+      },
+      {
+        "title": "Apply For Regalia Gold Credit Card",
+        "url": "https://www.hdfcbank.com/personal/pay/cards/credit-cards/regalia-gold-credit-card",
+        "snippet": "Regalia Gold Credit Card. Rs. 5,000 worth flight vouchers on spends of Rs. 5 lakh and. Rs. 7.5 lakh; Rs. 1,500 worth Myntra/Nykaa vouchers on quarterly"
+      },
+      {
+        "title": "Regalia Credit Card Eligibility Criteria",
+        "url": "https://www.hdfcbank.com/personal/pay/cards/credit-cards/regalia/eligibility",
+        "snippet": "Age: Minimum 21 years and maximum 60 years. Net Monthly Income > ₹1 lakh. For a self-employed Indian national. Age: Minimum 21 years and maximum 65 years."
+      },
+      {
+        "title": "HDFC Credit Card Eligibility Criteria - Check & Apply Online",
+        "url": "https://www.paisabazaar.com/hdfc-bank/credit-card-eligibility/",
+        "snippet": "Minimum Income Required* Rs. 10,000 onwards Other Criteria Should have a regular source of income. Regalia Credit Card Rs. 1,00,000 p.m. ITR of more than Rs. ..."
+      },
+      {
+        "title": "Business Regalia Credit Card - Know the Eligibility Criteria",
+        "url": "https://www.hdfcbank.com/personal/pay/cards/business-credit-cards/business-regalia/eligibility",
+        "snippet": "Age: Minimum 21 years and maximum 65 years. Income Tax Return (ITR): > ₹12 lakh annually. Customers can apply for credit card using ITR, GST returns, ..."
+      },
+      {
+        "title": "Diners Club Black Credit Card Eligibility Requirement",
+        "url": "https://www.hdfcbank.com/personal/pay/cards/credit-cards/diners-club-black/eligibility",
+        "snippet": "Minimum 21 and maximum 60 years. Income: Net Monthly Income > ₹1.75 lakh per month. For Self Employed Indian national Age: Minimum 21 and maximum 65 years. ..."
+      },
+      {
+        "title": "Regalia Credit Card - Apply for the Luxury Credit Card",
+        "url": "https://www.hdfcbank.com/personal/pay/cards/credit-cards/regalia",
+        "snippet": "based on spends of minimum ₹ 1 lakh per calendar quarter. every ₹200 spent Milestone Memberships/ Vouchers"
+      },
+      {
+        "title": "Check Freedom Credit Card Eligibility Criteria",
+        "url": "https://www.hdfcbank.com/personal/pay/cards/credit-cards/freedom-card-new/eligibility",
+        "snippet": "Income requirement: Gross Monthly Income> ₹12,000 Self Employed Age: Minimum 21 years to maximum 65 years. Income requirement: ITR > ₹2 lakh annually. If you' ..."
+      }
+    ],
+    "retrieved_at": "2026-10-20T16:43:11.848949+00:00",
+    "structured": {
+      "annual_fee_inr": null,
+      "joining_fee_inr": null,
+      "fee_waiver_condition": null,
+      "reward_unit": null,
+      "cashback_rates": null,
+      "reward_points_per_100_inr": null,
+      "point_value_inr": null,
+      "monthly_cashback_cap_inr": null,
+      "eligibility": {
+        "min_age": 21,
+        "max_age": 65,
+        "min_income_monthly_inr": 100000,
+        "credit_score_min": null,
+        "employment_types": [
+          "salaried",
+          "self_employed"
+        ]
+      },
+      "exclusions": null,
+      "key_benefits": [
+        "Rs. 5,000 worth flight vouchers on spends of Rs. 5 lakh and Rs. 7.5 lakh",
+        "Rs. 1,500 worth Myntra/Nykaa vouchers on quarterly spends"
+      ],
+      "uncertainty_flags": []
+    }
+  }
+}

@@ -1,0 +1,230 @@
+[
+  {
+    "id": "hdfc_millennia",
+    "name": "HDFC Millennia Credit Card",
+    "bank": "HDFC Bank",
+    "annual_fee_inr": 1000,
+    "fee_waiver_condition": "Spend ₹1,00,000 in a year",
+    "joining_fee_inr": 1000,
+    "network": "Visa/Mastercard",
+    "card_type": "cashback",
+    "best_for": ["online_shopping", "dining", "entertainment"],
+    "eligibility": {
+      "min_age": 21,
+      "max_age": 60,
+      "employment_types": ["salaried", "self_employed"],
+      "min_income_monthly_inr": 35000,
+      "credit_score_min": 700,
+      "notes": "Existing HDFC account preferred but not mandatory."
+    },
+    "rewards": {
+      "verified": true,
+      "source_url": "https://www.hdfcbank.com/content/bbp/repositories/723fb80dd4c04722830542dbabc7b05f/?folderPath=/Common/Credit-Card/Credit-Cards/Millennia-Credit-Card/&fileName=Millennia-Credit-Card-MITCb.pdf",
+      "uncertainty_flag": false,
+      "excluded_categories": ["fuel"],
+      "cashback_rates": {
+        "online_shopping": 5.0,
+        "dining": 5.0,
+        "entertainment": 5.0,
+        "wallet_loads": 5.0,
+        "other": 1.0
+      },
+      "reward_unit": "percent_cashback",
+      "monthly_cashback_cap_inr": 1000,
+      "notes": "5% cashback capped at ₹1,000/month across all 5% categories combined."
+    },
+    "key_benefits": [
+      "5% cashback on Amazon, Flipkart, Myntra, Swiggy, Zomato and more",
+      "1% cashback on other spends",
+      "8 complimentary lounge visits per year (domestic)"
+    ],
+    "exclusions": [
+      "No cashback on fuel, EMI transactions, rent, utilities",
+      "Cashback credited as CashPoints (1 CashPoint = ₹1)"
+    ],
+    "last_verified": "2025-10"
+  },
+  {
+    "id": "sbi_simplysave",
+    "name": "SBI SimplySAVE Credit Card",
+    "bank": "State Bank of India",
+    "annual_fee_inr": 499,
+    "fee_waiver_condition": "Spend ₹1,00,000 in the previous year",
+    "joining_fee_inr": 499,
+    "network": "Visa/Mastercard",
+    "card_type": "rewards",
+    "best_for": ["grocery", "dining", "movies", "departmental_stores"],
+    "eligibility": {
+      "min_age": 21,
+      "max_age": 65,
+      "employment_types": ["salaried", "self_employed"],
+      "min_income_monthly_inr": 20000,
+      "credit_score_min": 650,
+      "notes": "Relatively easier approval; good first credit card option."
+    },
+    "rewards": {
+      "verified": true,
+      "source_url": "https://www.sbicard.com/en/personal/credit-cards/shopping/simplysave-sbi-card.page",
+      "uncertainty_flag": false,
+      "excluded_categories": ["fuel"],
+      "reward_points_per_100_inr": {
+        "grocery": 10,
+        "dining": 10,
+        "movies": 10,
+        "departmental_stores": 10,
+        "other": 1
+      },
+      "reward_unit": "points_per_100_inr",
+      "point_value_inr": 0.25,
+      "notes": "10X reward points on grocery, dining, movies, departmental stores. 1 RP = ₹0.25."
+    },
+    "key_benefits": [
+      "10X reward points on grocery, dining, movies and departmental stores",
+      "2,000 bonus points on spending ₹2,000 within first 60 days",
+      "Low annual fee with easy waiver"
+    ],
+    "exclusions": [
+      "No reward points on fuel, cash advances, EMI",
+      "Points expire after 2 years"
+    ],
+    "last_verified": "2025-10"
+  },
+  {
+    "id": "axis_ace",
+    "name": "Axis Bank ACE Credit Card",
+    "bank": "Axis Bank",
+    "annual_fee_inr": 499,
+    "fee_waiver_condition": "Spend ₹2,00,000 in a year",
+    "joining_fee_inr": 499,
+    "network": "Visa",
+    "card_type": "cashback",
+    "best_for": ["bill_payments", "recharges", "food_delivery", "online_shopping"],
+    "eligibility": {
+      "min_age": 18,
+      "max_age": 70,
+      "employment_types": ["salaried", "self_employed"],
+      "min_income_monthly_inr": 15000,
+      "credit_score_min": 650,
+      "notes": "One of the most accessible premium cashback cards in India."
+    },
+    "rewards": {
+      "verified": true,
+      "source_url": "https://www.axisbank.com/retail/cards/credit-card/ace-credit-card",
+      "uncertainty_flag": false,
+      "excluded_categories": ["fuel"],
+      "cashback_rates": {
+        "bill_payments_google_pay": 5.0,
+        "recharges_google_pay": 5.0,
+        "food_delivery": 4.0,
+        "swiggy": 4.0,
+        "zomato": 4.0,
+        "online_shopping": 2.0,
+        "other": 2.0
+      },
+      "reward_unit": "percent_cashback",
+      "monthly_cashback_cap_inr": null,
+      "notes": "5% on bill payments & recharges via Google Pay. 4% on Swiggy, Zomato, Ola. 2% on all other spends. No cap on 2% category."
+    },
+    "key_benefits": [
+      "5% cashback on utility bills and recharges via Google Pay",
+      "4% cashback on Swiggy, Zomato, Ola",
+      "2% unlimited cashback on all other spends",
+      "4 complimentary domestic lounge visits/year"
+    ],
+    "exclusions": [
+      "No cashback on fuel transactions",
+      "Cashback credited on minimum ₹500 bill payment or ₹200 other transactions"
+    ],
+    "last_verified": "2025-10"
+  },
+  {
+    "id": "amex_mrcc",
+    "name": "American Express Membership Rewards Credit Card",
+    "bank": "American Express",
+    "annual_fee_inr": 1500,
+    "fee_waiver_condition": "No fee waiver; reduced to ₹1,500 from Year 2 if you spend ₹1,50,000",
+    "joining_fee_inr": 0,
+    "network": "Amex",
+    "card_type": "rewards",
+    "best_for": ["dining", "online_shopping", "travel", "lifestyle"],
+    "eligibility": {
+      "min_age": 18,
+      "max_age": 65,
+      "employment_types": ["salaried", "self_employed"],
+      "min_income_monthly_inr": 50000,
+      "credit_score_min": 720,
+      "notes": "Amex acceptance limited in India; best for urban users. Strong rewards program."
+    },
+    "rewards": {
+      "verified": true,
+      "source_url": "https://www.americanexpress.com/in/credit-cards/membership-rewards-card/",
+      "uncertainty_flag": false,
+      "excluded_categories": ["fuel", "insurance"],
+      "reward_points_per_100_inr": {
+        "all_spends": 2,
+        "other": 2
+      },
+      "reward_unit": "membership_rewards_points",
+      "point_value_inr": 0.5,
+      "notes": "1 MR point per ₹50 spent (= 2 pts per ₹100). Exclusions: fuel, insurance, utilities, cash transactions, EMI at PoS. Monthly milestone: 1,000 bonus MR points on 4 transactions of ₹1,500+ in a calendar month (separate from base earn; enrollment-based). point_value_inr is an estimate — actual value varies by redemption method (airline miles, hotel points, Pay with Points)."
+    },
+    "key_benefits": [
+      "1,000 bonus MR points every month on 4 qualifying transactions",
+      "Points transferable to IndiGo, Air India, Marriott and more",
+      "18% GST savings at select partner restaurants",
+      "Amex Offers for exclusive deals"
+    ],
+    "exclusions": [
+      "Limited acceptance compared to Visa/Mastercard in India",
+      "No MR points on fuel, insurance, utilities, cash transactions, EMI conversion at PoS",
+      "Monthly 1,000 bonus points require enrollment and 4 transactions of ₹1,500+ in the calendar month"
+    ],
+    "last_verified": "2025-10"
+  },
+  {
+    "id": "icici_amazon_pay",
+    "name": "Amazon Pay ICICI Credit Card",
+    "bank": "ICICI Bank",
+    "annual_fee_inr": 0,
+    "fee_waiver_condition": "Lifetime free",
+    "joining_fee_inr": 0,
+    "network": "Visa",
+    "card_type": "cashback",
+    "best_for": ["amazon_shopping", "bill_payments", "online_shopping"],
+    "eligibility": {
+      "min_age": 18,
+      "max_age": 60,
+      "employment_types": ["salaried", "self_employed"],
+      "min_income_monthly_inr": 25000,
+      "credit_score_min": 700,
+      "notes": "Apply via Amazon app. Amazon Prime members get higher cashback. Good lifetime-free option."
+    },
+    "rewards": {
+      "verified": true,
+      "source_url": "https://www.amazon.in/gp/cobrandcard/marketing/landing",
+      "uncertainty_flag": false,
+      "cashback_rates": {
+        "amazon_prime_members_amazon": 5.0,
+        "non_prime_members_amazon": 3.0,
+        "amazon_pay_partner_merchants": 2.0,
+        "other": 1.0
+      },
+      "reward_unit": "percent_cashback_amazon_pay_balance",
+      "monthly_cashback_cap_inr": null,
+      "notes": "Cashback credited as Amazon Pay balance. 5% for Prime, 3% for non-Prime on Amazon. No cap on cashback."
+    },
+    "key_benefits": [
+      "Lifetime free — no annual or joining fee",
+      "5% cashback on Amazon for Prime members (3% for non-Prime)",
+      "2% on Amazon Pay partner merchants (100+ brands)",
+      "1% on all other spends including utilities",
+      "No cap on cashback earned"
+    ],
+    "exclusions": [
+      "Cashback credited as Amazon Pay balance, not transferable to bank",
+      "No lounge access",
+      "Fuel surcharge not waived"
+    ],
+    "last_verified": "2025-10"
+  }
+]
