@@ -726,3 +726,164 @@ class TestExclusionEnforcement:
         }
         r = calculate_rewards(card, "fuel", 5000)
         assert r["reward_value_inr"] == 100.0  # 2% of ₹5,000
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 8. Reliability fixes — verification accuracy and rate fallback correctness
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class TestReliabilityFixes:
+
+    # ── Fix 1: verified flag only set when cache contributed rate data ────────
+
+    def test_cache_with_null_rates_does_not_upgrade_verified(self):
+        """
+        When the cache has all-null cashback_rates (could not confirm rates),
+        the card's verified flag must stay as it was on the static card.
+        It must NOT be upgraded to True by the cache merge.
+        """
+        import src.cache as cache_mod
+
+        static_card = {
+            "id": "_verify_test",
+            "name": "Verify Test Card",
+            "bank": "Test Bank",
+            "annual_fee_inr": 500,
+            "rewards": {
+                "verified": True,    # static card is already verified
+                "uncertainty_flag": False,
+                "reward_unit": "percent_cashback",
+                "cashback_rates": {"online_shopping": 5.0, "other": 1.0},
+                "monthly_cashback_cap_inr": None,
+                "source_url": "https://example.com/pdf",
+            },
+            "eligibility": {},
+        }
+
+        # Cache found the card but couldn't extract any rates
+        fake_entry = {
+            "card_id": "_verify_test",
+            "card_name": "Verify Test Card",
+            "query": "test",
+            "raw_answer": "test",
+            "sources": [{"title": "t", "url": "https://example.com", "snippet": "s"}],
+            "retrieved_at": "2026-01-01T00:00:00+00:00",
+            "structured": {
+                "annual_fee_inr": None,
+                "joining_fee_inr": None,
+                "fee_waiver_condition": None,
+                "reward_unit": None,
+                "cashback_rates": {"online_shopping": None},  # all null — not confirmed
+                "reward_points_per_100_inr": None,
+                "point_value_inr": None,
+                "monthly_cashback_cap_inr": None,
+                "eligibility": {
+                    "min_age": None, "max_age": None,
+                    "min_income_monthly_inr": None,
+                    "credit_score_min": None, "employment_types": None,
+                },
+                "exclusions": None,
+                "key_benefits": None,
+                "uncertainty_flags": ["cashback_rates"],
+            },
+        }
+
+        original = cache_mod.get_cached_entry
+        cache_mod.get_cached_entry = lambda cid: fake_entry if cid == "_verify_test" else None
+        try:
+            from src.cache import apply_cache_to_card
+            merged = apply_cache_to_card(static_card)
+        finally:
+            cache_mod.get_cached_entry = original
+
+        # static card was verified=True; cache contributed nothing; must stay True
+        # (not changed to False either — the static verification is preserved)
+        assert merged["rewards"]["verified"] is True
+        # and the static rate must be intact
+        assert merged["rewards"]["cashback_rates"]["online_shopping"] == 5.0
+
+    def test_hdfc_millennia_verified_flag_unaffected_by_null_cache(self):
+        """
+        End-to-end: HDFC Millennia has a null-rates cache entry.
+        Its verified flag must equal the static card's value (True),
+        not be falsely upgraded or downgraded by the cache.
+        """
+        cards = load_cards(use_cache=True)
+        hdfc = next(c for c in cards if c["id"] == "hdfc_millennia")
+        # Static card is verified=True; cache contributed no rates
+        assert hdfc["rewards"]["verified"] is True
+        # Rates must still be the static ones
+        assert hdfc["rewards"]["cashback_rates"]["online_shopping"] == 5.0
+
+    # ── Fix 2: explicit 0.0 rate is not treated as missing ───────────────────
+
+    def test_explicit_zero_cashback_rate_not_fallen_through(self):
+        """
+        If a category has an explicit rate of 0.0, the calculator must
+        return ₹0 for that category — not fall through to the 'other' rate.
+        """
+        card = {
+            "id": "_zero_rate",
+            "name": "Zero Rate Card",
+            "bank": "Test Bank",
+            "rewards": {
+                "verified": True,
+                "uncertainty_flag": False,
+                "reward_unit": "percent_cashback",
+                "cashback_rates": {
+                    "dining": 0.0,   # explicitly zero — not missing
+                    "other": 2.0,
+                },
+                "monthly_cashback_cap_inr": None,
+                "source_url": None,
+            },
+        }
+        r = calculate_rewards(card, "dining", 5000)
+        # Must use 0.0, not fall through to 2.0
+        assert r["reward_value_inr"] == 0.0, (
+            f"Explicit 0.0 rate was treated as missing and fell to 'other' 2%. Got ₹{r['reward_value_inr']}"
+        )
+
+    def test_explicit_zero_points_rate_not_fallen_through(self):
+        """Same for reward points: explicit 0 must not fall to 'other'."""
+        card = {
+            "id": "_zero_pts",
+            "name": "Zero Points Card",
+            "bank": "Test Bank",
+            "rewards": {
+                "verified": True,
+                "uncertainty_flag": False,
+                "reward_unit": "points_per_100_inr",
+                "reward_points_per_100_inr": {
+                    "fuel": 0,   # explicitly zero
+                    "other": 5,
+                },
+                "point_value_inr": 0.25,
+                "source_url": None,
+            },
+        }
+        r = calculate_rewards(card, "fuel", 5000)
+        assert r["reward_value_inr"] == 0.0, (
+            f"Explicit 0 pts rate fell through to 'other' 5pts. Got ₹{r['reward_value_inr']}"
+        )
+
+    def test_missing_category_still_falls_to_other(self):
+        """
+        A category not present in the rates map at all must still
+        fall through to the 'other' rate — that behaviour is correct.
+        """
+        card = {
+            "id": "_missing_cat",
+            "name": "Missing Cat Card",
+            "bank": "Test Bank",
+            "rewards": {
+                "verified": True,
+                "uncertainty_flag": False,
+                "reward_unit": "percent_cashback",
+                "cashback_rates": {"other": 1.5},
+                "monthly_cashback_cap_inr": None,
+                "source_url": None,
+            },
+        }
+        r = calculate_rewards(card, "travel", 5000)
+        assert r["reward_value_inr"] == 75.0  # 1.5% of 5000

@@ -302,11 +302,14 @@ def apply_cache_to_card(card: dict) -> dict:
     if "monthly_cashback_cap_inr" in s and "monthly_cashback_cap_inr" not in uncertain_fields:
         rewards["monthly_cashback_cap_inr"] = s["monthly_cashback_cap_inr"]
 
-    # Mark as verified from live research.
-    # Preserve the static source_url — it points to the rewards-specific document
-    # (e.g. MITC PDF). Only fall back to the first cache source when the static
-    # card had no source_url set at all.
-    rewards["verified"] = True
+    # Mark verified only when the cache actually contributed rate data.
+    # If the cache had no usable rates (all null), the static card's own
+    # verified flag is already correct — do not upgrade it.
+    cache_contributed_rates = cb_was_applied or pts_was_applied
+    if cache_contributed_rates:
+        rewards["verified"] = True
+    # else: leave rewards["verified"] as it was from the static card
+
     if not rewards.get("source_url") and entry["sources"]:
         rewards["source_url"] = entry["sources"][0]["url"]
 

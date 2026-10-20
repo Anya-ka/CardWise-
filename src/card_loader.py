@@ -146,9 +146,9 @@ def calculate_rewards(card: dict, category: str, amount_inr: float) -> dict[str,
 
     if unit == "percent_cashback" or unit == "percent_cashback_amazon_pay_balance":
         rates: dict = rewards.get("cashback_rates") or {}
-        rate = rates.get(cat) or rates.get("other", 0.0)
-        if rate is None:
-            rate = 0.0
+        # Use is-not-None so an explicit 0.0 rate is not treated as missing
+        rate = rates[cat] if cat in rates and rates[cat] is not None else (
+               rates["other"] if "other" in rates and rates["other"] is not None else 0.0)
         cap = rewards.get("monthly_cashback_cap_inr")
         raw = amount_inr * rate / 100
         if cap:
@@ -160,9 +160,9 @@ def calculate_rewards(card: dict, category: str, amount_inr: float) -> dict[str,
 
     elif unit in ("points_per_100_inr", "membership_rewards_points"):
         pts_map: dict = rewards.get("reward_points_per_100_inr") or {}
-        pts_per_100 = pts_map.get(cat) or pts_map.get("other", 1)
-        if pts_per_100 is None:
-            pts_per_100 = 1
+        # Use is-not-None so an explicit 0 pts rate is not treated as missing
+        pts_per_100 = pts_map[cat] if cat in pts_map and pts_map[cat] is not None else (
+                      pts_map["other"] if "other" in pts_map and pts_map["other"] is not None else 1)
         point_value = rewards.get("point_value_inr") or 0.25
         points_earned = int(amount_inr / 100) * pts_per_100
         reward_value_inr = round(points_earned * point_value, 2)

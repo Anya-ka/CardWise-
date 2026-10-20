@@ -289,7 +289,7 @@ with tab_advisor:
 with tab_research:
     st.subheader("Live Research from Official Sources")
     st.caption(
-        "TinyFish searches official bank websites to extract up-to-date "
+        "TinyFish searches official bank and financial sources to extract up-to-date "
         "eligibility criteria, fees, rewards and exclusions — with source URLs."
     )
 
@@ -321,7 +321,7 @@ with tab_research:
             if _cached:
                 st.info("⚡ **Loading from research cache…**")
             else:
-                st.info("⏳ **Searching official bank sources with TinyFish…** (~20 seconds)")
+                st.info("⏳ **Searching official bank and financial sources with TinyFish…** (~20 seconds)")
 
             status_box = st.empty()
             log: list[str] = []
