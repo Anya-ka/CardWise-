@@ -10,9 +10,9 @@ At its core, CardWise combines **TinyFish for automated web research** with **Go
 
 ## Demo
 
-**Video Demo:** Coming Soon
+**Video Demo:** 
 
-[Watch the CardWise Demo](YOUR_VIDEO_LINK_HERE)
+[Watch the CardWise Demo](https://drive.google.com/file/d/1tVdcNJN2wMT8pCFo-n2jnY9vhVQYOSVW/view?usp=sharing)
 
 ---
 
