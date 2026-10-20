@@ -118,6 +118,29 @@ def research_card(query: str, progress_callback=None, force_refresh: bool = Fals
     # ── Step 1: TinyFish Search ────────────────────────────────────────────────
     _progress("🔍 Searching official bank sources…")
 
+    # Official bank domains — sources from these are tagged "official"
+    _OFFICIAL_DOMAINS = {
+        "hdfcbank.com", "sbicard.com", "axisbank.com", "icicibank.com",
+        "americanexpress.com", "kotak.com", "idfcfirstbank.com", "rbi.org.in",
+    }
+    # Trusted financial aggregators — tagged "aggregator"
+    _AGGREGATOR_DOMAINS = {"bankbazaar.com", "paisabazaar.com"}
+
+    def _source_type(url: str) -> str:
+        """Return 'official', 'aggregator', or 'third_party' based on domain."""
+        from urllib.parse import urlparse
+        try:
+            host = urlparse(url).hostname or ""
+            # strip www.
+            host = host.removeprefix("www.")
+            if any(host == d or host.endswith("." + d) for d in _OFFICIAL_DOMAINS):
+                return "official"
+            if any(host == d or host.endswith("." + d) for d in _AGGREGATOR_DOMAINS):
+                return "aggregator"
+        except Exception:
+            pass
+        return "third_party"
+
     try:
         import tinyfish
         client = tinyfish.TinyFish(api_key=os.getenv("TINYFISH_API_KEY"))
@@ -171,32 +194,74 @@ def research_card(query: str, progress_callback=None, force_refresh: bool = Fals
             "error": "no_results",
         }
 
-    _progress(f"✅ Found {len(results)} sources. Generating summary…")
+    _progress(f"✅ Found {len(results)} sources. Fetching top official pages…")
 
-    # ── Step 2: Build source list ──────────────────────────────────────────────
+    # ── Step 2: Build source list with quality tags ───────────────────────────
     sources = [
         {
-            "title":   getattr(r, "title",   "") or getattr(r, "url", ""),
-            "url":     getattr(r, "url",     ""),
-            "snippet": getattr(r, "snippet", "") or "",
+            "title":       getattr(r, "title",   "") or getattr(r, "url", ""),
+            "url":         getattr(r, "url",     ""),
+            "snippet":     getattr(r, "snippet", "") or "",
+            "source_type": _source_type(getattr(r, "url", "")),
         }
         for r in results[:8]
     ]
 
+    # ── Step 2b: TinyFish Fetch — enrich top official sources ────────────────
+    # Fetch full content from the top 2 official-domain URLs to get richer
+    # text than search snippets alone. Falls back gracefully if fetch fails.
+    official_urls = [
+        s["url"] for s in sources
+        if s["source_type"] == "official" and s["url"]
+    ][:2]  # cap at 2 to stay within free tier and keep latency low
+
+    fetched_content: dict[str, str] = {}  # url → extracted text
+    if official_urls:
+        try:
+            fetch_resp = client.fetch.get_contents(
+                urls=official_urls,
+                purpose=(
+                    "Extract credit card reward rates, cashback percentages, "
+                    "annual fees, eligibility criteria, and exclusions."
+                ),
+                format="markdown",
+            )
+            for item in (fetch_resp if isinstance(fetch_resp, list) else [fetch_resp]):
+                url = getattr(item, "url", "") or getattr(item, "requested_url", "")
+                content = getattr(item, "content", "") or getattr(item, "markdown", "") or ""
+                if url and content:
+                    # Cap per-page content to avoid overwhelming the LLM
+                    fetched_content[url] = content[:3000]
+            if fetched_content:
+                _progress(f"📄 Fetched full content from {len(fetched_content)} official page(s).")
+        except Exception as fetch_exc:
+            # Non-fatal — fall back to snippets only
+            _progress(f"ℹ️ Fetch step skipped ({fetch_exc.__class__.__name__}), using snippets only.")
+
     # ── Step 3: Gemini summarisation ───────────────────────────────────────────
+    # Build snippets text — search snippets first, then fetched content
     snippets_text = "\n\n".join(
-        f"**Source:** [{s['title']}]({s['url']})\n{s['snippet']}"
+        f"**[{s['source_type'].upper()} SOURCE]** [{s['title']}]({s['url']})\n{s['snippet']}"
         for s in sources
         if s["snippet"]
     )
 
+    fetched_text = ""
+    if fetched_content:
+        fetched_text = "\n\n---\n**Full page content from official sources:**\n\n" + "\n\n".join(
+            f"**{url}**\n{content}"
+            for url, content in fetched_content.items()
+        )
+
     system_prompt = """You are CardWise Research, an expert credit card analyst for India.
-You are given web search snippets from official bank and finance websites.
+You are given web search snippets and (where available) full page content from official bank websites.
 Synthesise them into a clear, structured markdown report answering the user's question.
 
 Rules:
-- Only state facts supported by the provided snippets. Do not invent numbers or rates.
-- If a fact is uncertain or the snippet is vague, flag it with ⚠️.
+- Only state facts supported by the provided evidence. Do not invent numbers or rates.
+- Prefer facts from OFFICIAL SOURCE over AGGREGATOR or THIRD_PARTY sources.
+- If a fact comes only from a third-party source, flag it with ⚠️ (third-party only).
+- If a fact is uncertain or vague, flag it with ⚠️.
 - Cite the source URL inline for each key claim.
 - Use clear markdown headings and bullet points.
 - Keep it concise — 200 to 400 words max.
@@ -204,8 +269,8 @@ Rules:
 
     user_message = f"""User question: {query}
 
-Search results from official sources:
-{snippets_text}
+Search results (tagged by source quality):
+{snippets_text}{fetched_text}
 
 Write a concise, structured answer in markdown."""
 

@@ -110,6 +110,14 @@ def calculate_rewards(card: dict, category: str, amount_inr: float) -> dict[str,
     unit = rewards.get("reward_unit", "")
     cat = category.lower().replace(" ", "_")
 
+    # ── Rate scope: "all_transactions" vs "selected_merchants" ───────────────
+    # category_rate_scope maps category → scope. If a category is restricted
+    # to selected merchants, the result is labelled accordingly — correct
+    # arithmetic does not make the claim verified for all transactions.
+    scope_map = rewards.get("category_rate_scope", {})
+    rate_scope = scope_map.get(cat, "all_transactions")
+    merchant_note = rewards.get("selected_merchants_note", "") if rate_scope == "selected_merchants" else ""
+
     reward_value_inr = 0.0
     description = "No reward data available."
 
@@ -182,4 +190,9 @@ def calculate_rewards(card: dict, category: str, amount_inr: float) -> dict[str,
         "verified": verified,
         "uncertainty_flag": uncertainty_flag,
         "source_url": source_url,
+        # rate_scope: "all_transactions" = rate applies to all eligible spends in
+        # this category. "selected_merchants" = rate applies only to named partner
+        # merchants; other spends in this category earn a lower or different rate.
+        "rate_scope": rate_scope,
+        "rate_condition_note": merchant_note,
     }

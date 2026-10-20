@@ -370,6 +370,65 @@ with tab_research:
                         "💡 This card's data has been updated in the database. "
                         "Go to **🤖 AI Advisor** or **📊 Rewards Comparison** to see it reflected."
                     )
+
+                # ── Live Research Evidence panel ──────────────────────────────
+                if not result.get("from_cache") or result.get("retrieved_at"):
+                    try:
+                        from src.cache import get_cached_entry
+                        _ev_entry = get_cached_entry(result.get("card_id", ""))
+                        _ev = _ev_entry.get("evidence_summary", []) if _ev_entry else []
+                        _sources = _ev_entry.get("sources", []) if _ev_entry else result.get("sources", [])
+                    except Exception:
+                        _ev = []
+                        _sources = result.get("sources", [])
+
+                    if _ev:
+                        with st.expander("🔬 Live Research Evidence", expanded=False):
+                            st.caption(
+                                f"Extracted from live research · "
+                                f"Retrieved: {result.get('retrieved_at', '')[:19].replace('T', ' ')} UTC"
+                            )
+                            _status_icon = {"supported": "✅", "unverified": "⚠️", "missing": "—"}
+                            _quality_label = {
+                                "official": "🏦 Official",
+                                "aggregator": "📊 Aggregator",
+                                "third_party": "🌐 Third-party",
+                            }
+                            for ev_item in _ev:
+                                icon = _status_icon.get(ev_item["status"], "—")
+                                qlabel = _quality_label.get(ev_item["source_quality"], ev_item["source_quality"])
+                                val = ev_item["value"]
+                                if isinstance(val, dict):
+                                    val_str = ", ".join(f"{k}: {v}" for k, v in val.items())
+                                else:
+                                    val_str = str(val) if val is not None else "—"
+                                st.markdown(
+                                    f"{icon} **{ev_item['label']}:** {val_str} &nbsp; "
+                                    f"<span style='font-size:0.78rem;color:#6b7280'>{qlabel} · {ev_item['status'].title()}</span>",
+                                    unsafe_allow_html=True,
+                                )
+
+                            # Show how supported facts affect reward calculation
+                            from src.card_loader import load_cards, calculate_rewards
+                            _cards = load_cards(use_cache=True)
+                            _cid = result.get("card_id", "")
+                            _matched = next((c for c in _cards if c["id"] == _cid), None)
+                            if _matched:
+                                st.divider()
+                                st.caption("**Effect on Reward Comparison (₹5,000 · Online Shopping)**")
+                                _demo = calculate_rewards(_matched, "online_shopping", 5000)
+                                _badge = "✅ Verified" if _demo["verified"] and not _demo["uncertainty_flag"] else "⚠️ Unverified"
+                                st.markdown(
+                                    f"Estimated reward: **₹{_demo['reward_value_inr']:,.2f}** — "
+                                    f"{_demo['reward_description']} · {_badge}"
+                                )
+
+                            # Source quality breakdown
+                            official = [s for s in _sources if s.get("source_type") == "official"]
+                            third_p  = [s for s in _sources if s.get("source_type") == "third_party"]
+                            if official or third_p:
+                                st.divider()
+                                st.caption(f"Sources: {len(official)} official · {len(third_p)} third-party")
             else:
                 st.error(result["answer"])
 
@@ -438,11 +497,18 @@ with tab_compare:
         )
 
         for rank, r in enumerate(results, 1):
-            verified_badge = (
-                '<span class="badge-teal">✓ Verified</span>'
-                if r["verified"] and not r["uncertainty_flag"]
-                else '<span class="badge-yellow">⚠ Unverified</span>'
-            )
+            # Badge logic:
+            # - "✓ Verified" = verified source, all transactions in this category
+            # - "✓ Selected merchants" = verified source but only named partners qualify
+            # - "⚠ Unverified" = uncertain or unverified data
+            if r["verified"] and not r["uncertainty_flag"]:
+                if r.get("rate_scope") == "selected_merchants":
+                    verified_badge = '<span class="badge-teal">✓ Selected merchants</span>'
+                else:
+                    verified_badge = '<span class="badge-teal">✓ Verified</span>'
+            else:
+                verified_badge = '<span class="badge-yellow">⚠ Unverified</span>'
+
             medal = ["🥇", "🥈", "🥉"][rank - 1] if rank <= 3 else f"{rank}."
 
             # Look up if this card has live research data (for the teal border)
@@ -457,6 +523,8 @@ with tab_compare:
                     </div>""",
                     unsafe_allow_html=True,
                 )
+                if r.get("rate_condition_note"):
+                    st.caption(f"ℹ️ {r['rate_condition_note']}")
                 if r["source_url"]:
                     st.caption(f"Source: [{r['source_url']}]({r['source_url']})")
                 # MR points note — only for Amex MRCC

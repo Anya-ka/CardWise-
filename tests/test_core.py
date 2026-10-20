@@ -887,3 +887,522 @@ class TestReliabilityFixes:
         }
         r = calculate_rewards(card, "travel", 5000)
         assert r["reward_value_inr"] == 75.0  # 1.5% of 5000
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 9. TinyFish pipeline: source attribution, evidence summary, missing data,
+#    conflicting evidence, cache update behaviour
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class TestTinyFishPipeline:
+    """
+    Tests for source quality tagging, evidence summary generation,
+    handling of missing/conflicting data, and cache update behaviour.
+    No live API calls — all tests use offline logic only.
+    """
+
+    # ── Source quality tagging ────────────────────────────────────────────────
+
+    def test_source_type_official(self):
+        """Official bank domains are tagged 'official'."""
+        from src.research_agent import _detect_card_id
+        # We test _source_type indirectly by checking the tagging logic
+        from urllib.parse import urlparse
+
+        official_urls = [
+            "https://www.hdfcbank.com/credit-cards/millennia",
+            "https://sbicard.com/en/personal/credit-cards.page",
+            "https://www.axisbank.com/retail/cards/credit-card/ace-credit-card",
+            "https://www.icicibank.com/personal-banking/cards",
+            "https://www.americanexpress.com/in/credit-cards/",
+            "https://rbi.org.in/some-page",
+        ]
+        from src.research_agent import _CARD_ID_MAP  # exists in module scope
+        # Access _source_type by importing from the module
+        import importlib, types
+        ra = importlib.import_module("src.research_agent")
+        # _source_type is defined inside research_card(), not module-level.
+        # Test the domain logic directly instead.
+        OFFICIAL = {
+            "hdfcbank.com", "sbicard.com", "axisbank.com", "icicibank.com",
+            "americanexpress.com", "kotak.com", "idfcfirstbank.com", "rbi.org.in",
+        }
+        for url in official_urls:
+            host = urlparse(url).hostname.removeprefix("www.")
+            is_official = any(host == d or host.endswith("." + d) for d in OFFICIAL)
+            assert is_official, f"Expected {url} to be official, host={host}"
+
+    def test_source_type_third_party(self):
+        """Non-bank, non-aggregator domains are 'third_party'."""
+        from urllib.parse import urlparse
+        OFFICIAL = {
+            "hdfcbank.com", "sbicard.com", "axisbank.com", "icicibank.com",
+            "americanexpress.com", "kotak.com", "idfcfirstbank.com", "rbi.org.in",
+        }
+        AGGREGATOR = {"bankbazaar.com", "paisabazaar.com"}
+        third_party_urls = [
+            "https://vocal.media/journal/hdfc-card",
+            "https://www.reddit.com/r/CreditCardsIndia",
+            "https://www.youtube.com/watch?v=abc",
+        ]
+        for url in third_party_urls:
+            host = urlparse(url).hostname.removeprefix("www.")
+            is_official = any(host == d or host.endswith("." + d) for d in OFFICIAL)
+            is_agg = any(host == d or host.endswith("." + d) for d in AGGREGATOR)
+            assert not is_official and not is_agg, f"{url} should be third_party"
+
+    # ── Evidence summary generation ───────────────────────────────────────────
+
+    def test_evidence_summary_supported_fields(self):
+        """Fields with non-null, non-uncertain values get status 'supported'."""
+        from src.cache import _build_evidence_summary
+        structured = {
+            "annual_fee_inr": 1000,
+            "fee_waiver_condition": "Spend ₹1L",
+            "reward_unit": "percent_cashback",
+            "cashback_rates": {"online_shopping": 5.0},
+            "reward_points_per_100_inr": None,
+            "monthly_cashback_cap_inr": None,
+            "uncertainty_flags": [],
+        }
+        sources = [{"url": "https://www.hdfcbank.com/x", "source_type": "official"}]
+        summary = _build_evidence_summary(structured, sources)
+
+        statuses = {item["field"]: item["status"] for item in summary}
+        assert statuses["annual_fee_inr"] == "supported"
+        assert statuses["reward_unit"] == "supported"
+        assert statuses["cashback_rates"] == "supported"
+        # missing fields excluded
+        assert "reward_points_per_100_inr" not in statuses
+        assert "monthly_cashback_cap_inr" not in statuses
+
+    def test_evidence_summary_uncertain_fields(self):
+        """Fields in uncertainty_flags get status 'unverified'."""
+        from src.cache import _build_evidence_summary
+        structured = {
+            "annual_fee_inr": 500,
+            "cashback_rates": {"dining": 3.0},
+            "fee_waiver_condition": None,
+            "reward_unit": None,
+            "reward_points_per_100_inr": None,
+            "monthly_cashback_cap_inr": None,
+            "uncertainty_flags": ["cashback_rates"],
+        }
+        sources = [{"url": "https://www.sbicard.com/x", "source_type": "official"}]
+        summary = _build_evidence_summary(structured, sources)
+        statuses = {item["field"]: item["status"] for item in summary}
+        assert statuses["cashback_rates"] == "unverified"
+        assert statuses["annual_fee_inr"] == "supported"
+
+    def test_evidence_summary_source_quality_official(self):
+        """Source quality reflects the best available source in the list."""
+        from src.cache import _build_evidence_summary
+        structured = {
+            "annual_fee_inr": 499,
+            "fee_waiver_condition": None,
+            "reward_unit": "percent_cashback",
+            "cashback_rates": None,
+            "reward_points_per_100_inr": None,
+            "monthly_cashback_cap_inr": None,
+            "uncertainty_flags": [],
+        }
+        sources = [
+            {"url": "https://www.axisbank.com/ace", "source_type": "official"},
+            {"url": "https://vocal.media/abc",      "source_type": "third_party"},
+        ]
+        summary = _build_evidence_summary(structured, sources)
+        for item in summary:
+            assert item["source_quality"] == "official"
+
+    def test_evidence_summary_third_party_only(self):
+        """When only third-party sources exist, quality is 'third_party'."""
+        from src.cache import _build_evidence_summary
+        structured = {
+            "annual_fee_inr": 999,
+            "fee_waiver_condition": None,
+            "reward_unit": None,
+            "cashback_rates": None,
+            "reward_points_per_100_inr": None,
+            "monthly_cashback_cap_inr": None,
+            "uncertainty_flags": [],
+        }
+        sources = [{"url": "https://vocal.media/abc", "source_type": "third_party"}]
+        summary = _build_evidence_summary(structured, sources)
+        for item in summary:
+            assert item["source_quality"] == "third_party"
+
+    def test_evidence_summary_empty_structured(self):
+        """Empty or None structured data returns an empty summary — no crash."""
+        from src.cache import _build_evidence_summary
+        assert _build_evidence_summary({}, []) == []
+        assert _build_evidence_summary(None, []) == []  # type: ignore
+
+    # ── Missing data handling ─────────────────────────────────────────────────
+
+    def test_missing_rates_not_applied_to_card(self):
+        """
+        A cache entry with all-null rates must not change the card's reward rates.
+        The static rates must be fully preserved.
+        """
+        import src.cache as cache_mod
+        from src.cache import apply_cache_to_card
+
+        static_card = {
+            "id": "_missing_rates",
+            "name": "Missing Rates Card",
+            "bank": "Test",
+            "annual_fee_inr": 500,
+            "rewards": {
+                "verified": True,
+                "uncertainty_flag": False,
+                "reward_unit": "percent_cashback",
+                "cashback_rates": {"online_shopping": 5.0, "other": 1.0},
+                "monthly_cashback_cap_inr": None,
+                "source_url": "https://example.com/pdf",
+            },
+            "eligibility": {},
+        }
+        fake_entry = {
+            "card_id": "_missing_rates",
+            "card_name": "Missing Rates Card",
+            "query": "test",
+            "raw_answer": "fees only",
+            "sources": [{"title": "t", "url": "https://example.com", "snippet": "s",
+                          "source_type": "official"}],
+            "retrieved_at": "2026-01-01T00:00:00+00:00",
+            "evidence_summary": [],
+            "structured": {
+                "annual_fee_inr": 500,
+                "joining_fee_inr": None,
+                "fee_waiver_condition": None,
+                "reward_unit": None,
+                "cashback_rates": None,   # completely missing
+                "reward_points_per_100_inr": None,
+                "point_value_inr": None,
+                "monthly_cashback_cap_inr": None,
+                "eligibility": {"min_age": None, "max_age": None,
+                                "min_income_monthly_inr": None, "credit_score_min": None,
+                                "employment_types": None},
+                "exclusions": None,
+                "key_benefits": None,
+                "uncertainty_flags": [],
+            },
+        }
+
+        original = cache_mod.get_cached_entry
+        cache_mod.get_cached_entry = lambda cid: fake_entry if cid == "_missing_rates" else None
+        try:
+            merged = apply_cache_to_card(static_card)
+        finally:
+            cache_mod.get_cached_entry = original
+
+        assert merged["rewards"]["cashback_rates"]["online_shopping"] == 5.0
+        assert merged["rewards"]["cashback_rates"]["other"] == 1.0
+
+    # ── Conflicting sources handling ──────────────────────────────────────────
+
+    def test_uncertain_rate_not_applied(self):
+        """
+        A cached rate that is flagged as uncertain must not override
+        the static card's known rate.
+        """
+        import src.cache as cache_mod
+        from src.cache import apply_cache_to_card
+
+        static_card = {
+            "id": "_conflict_test",
+            "name": "Conflict Card",
+            "bank": "Test",
+            "annual_fee_inr": 999,
+            "rewards": {
+                "verified": True,
+                "uncertainty_flag": False,
+                "reward_unit": "percent_cashback",
+                "cashback_rates": {"dining": 5.0, "other": 1.0},
+                "monthly_cashback_cap_inr": None,
+                "source_url": "https://example.com",
+            },
+            "eligibility": {},
+        }
+        fake_entry = {
+            "card_id": "_conflict_test",
+            "card_name": "Conflict Card",
+            "query": "test",
+            "raw_answer": "test",
+            "sources": [{"title": "t", "url": "https://example.com", "snippet": "s",
+                          "source_type": "official"}],
+            "retrieved_at": "2026-01-01T00:00:00+00:00",
+            "evidence_summary": [],
+            "structured": {
+                "annual_fee_inr": None,
+                "joining_fee_inr": None,
+                "fee_waiver_condition": None,
+                "reward_unit": None,
+                "cashback_rates": {"dining": 3.0},  # conflicts with static 5.0
+                "reward_points_per_100_inr": None,
+                "point_value_inr": None,
+                "monthly_cashback_cap_inr": None,
+                "eligibility": {"min_age": None, "max_age": None,
+                                "min_income_monthly_inr": None, "credit_score_min": None,
+                                "employment_types": None},
+                "exclusions": None,
+                "key_benefits": None,
+                # dining flagged as uncertain — should not override static
+                "uncertainty_flags": ["cashback_rates"],
+            },
+        }
+
+        original = cache_mod.get_cached_entry
+        cache_mod.get_cached_entry = lambda cid: fake_entry if cid == "_conflict_test" else None
+        try:
+            merged = apply_cache_to_card(static_card)
+        finally:
+            cache_mod.get_cached_entry = original
+
+        # Uncertain cached value must not override static 5.0
+        assert merged["rewards"]["cashback_rates"]["dining"] == 5.0
+
+    # ── Reward calculation with source-tagged cache entry ─────────────────────
+
+    def test_reward_calculation_uses_official_cache_rates(self):
+        """
+        When a cache entry from official sources provides confirmed rates,
+        the reward calculator uses them correctly.
+        """
+        import src.cache as cache_mod
+        from src.cache import apply_cache_to_card
+
+        static_card = {
+            "id": "_official_cache",
+            "name": "Official Cache Card",
+            "bank": "Test",
+            "annual_fee_inr": 0,
+            "rewards": {
+                "verified": True,
+                "uncertainty_flag": False,
+                "reward_unit": "percent_cashback",
+                "cashback_rates": {"other": 1.0},
+                "monthly_cashback_cap_inr": None,
+                "source_url": "https://example.com",
+                "excluded_categories": [],
+            },
+            "eligibility": {},
+        }
+        fake_entry = {
+            "card_id": "_official_cache",
+            "card_name": "Official Cache Card",
+            "query": "test",
+            "raw_answer": "5% on online shopping confirmed",
+            "sources": [{"title": "Official", "url": "https://www.hdfcbank.com/x",
+                          "snippet": "5% cashback on online shopping",
+                          "source_type": "official"}],
+            "retrieved_at": "2026-01-01T00:00:00+00:00",
+            "evidence_summary": [],
+            "structured": {
+                "annual_fee_inr": None,
+                "joining_fee_inr": None,
+                "fee_waiver_condition": None,
+                "reward_unit": "percent_cashback",
+                "cashback_rates": {"online_shopping": 5.0},
+                "reward_points_per_100_inr": None,
+                "point_value_inr": None,
+                "monthly_cashback_cap_inr": None,
+                "eligibility": {"min_age": None, "max_age": None,
+                                "min_income_monthly_inr": None, "credit_score_min": None,
+                                "employment_types": None},
+                "exclusions": None,
+                "key_benefits": None,
+                "uncertainty_flags": [],
+            },
+        }
+
+        original = cache_mod.get_cached_entry
+        cache_mod.get_cached_entry = lambda cid: fake_entry if cid == "_official_cache" else None
+        try:
+            merged = apply_cache_to_card(static_card)
+        finally:
+            cache_mod.get_cached_entry = original
+
+        r = calculate_rewards(merged, "online_shopping", 5000)
+        # Cache provided 5% from official source — should apply
+        assert r["reward_value_inr"] == 250.0
+        assert r["verified"] is True
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 10. Verification labels — rate_scope and merchant-restriction correctness
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class TestVerificationLabels:
+    """
+    Verifies that calculate_rewards() emits the correct rate_scope and
+    rate_condition_note, and that the badge logic distinguishes
+    "Verified (all transactions)" from "Verified (selected merchants only)".
+    """
+
+    # ── rate_scope emission ───────────────────────────────────────────────────
+
+    def test_hdfc_millennia_online_shopping_is_selected_merchants(self):
+        """
+        HDFC Millennia 5% on online_shopping applies only to named partner
+        merchants. rate_scope must be 'selected_merchants', not 'all_transactions'.
+        """
+        cards = _static_cards()
+        card = _get(cards, "hdfc_millennia")
+        r = calculate_rewards(card, "online_shopping", 5000)
+        assert r["rate_scope"] == "selected_merchants", (
+            f"Expected 'selected_merchants' for HDFC Millennia online_shopping, got '{r['rate_scope']}'"
+        )
+        assert r["rate_condition_note"] != "", "Merchant restriction note must not be empty"
+        assert "Amazon" in r["rate_condition_note"] or "Flipkart" in r["rate_condition_note"]
+
+    def test_hdfc_millennia_dining_is_selected_merchants(self):
+        """5% dining rate on HDFC Millennia applies to selected partners only."""
+        cards = _static_cards()
+        card = _get(cards, "hdfc_millennia")
+        r = calculate_rewards(card, "dining", 5000)
+        assert r["rate_scope"] == "selected_merchants"
+
+    def test_hdfc_millennia_other_is_all_transactions(self):
+        """1% 'other' rate has no merchant restriction — should be all_transactions."""
+        cards = _static_cards()
+        card = _get(cards, "hdfc_millennia")
+        r = calculate_rewards(card, "other", 5000)
+        assert r["rate_scope"] == "all_transactions"
+        assert r["rate_condition_note"] == ""
+
+    def test_hdfc_millennia_travel_fallback_is_all_transactions(self):
+        """Travel falls back to 'other' rate — no scope restriction applies."""
+        cards = _static_cards()
+        card = _get(cards, "hdfc_millennia")
+        r = calculate_rewards(card, "travel", 5000)
+        assert r["rate_scope"] == "all_transactions"
+
+    def test_axis_ace_has_no_merchant_restriction(self):
+        """Axis ACE has no category_rate_scope — all categories are all_transactions."""
+        cards = _static_cards()
+        card = _get(cards, "axis_ace")
+        r = calculate_rewards(card, "online_shopping", 5000)
+        assert r["rate_scope"] == "all_transactions"
+        assert r["rate_condition_note"] == ""
+
+    def test_sbi_simplysave_has_no_merchant_restriction(self):
+        cards = _static_cards()
+        card = _get(cards, "sbi_simplysave")
+        r = calculate_rewards(card, "dining", 5000)
+        assert r["rate_scope"] == "all_transactions"
+
+    # ── Badge logic: selected_merchants ≠ plain Verified ─────────────────────
+
+    def test_badge_for_selected_merchants_is_not_plain_verified(self):
+        """
+        The UI badge logic must NOT show '✓ Verified' for selected_merchants.
+        It should show '✓ Selected merchants' instead.
+        Mirror the exact badge condition from app.py.
+        """
+        cards = _static_cards()
+        card = _get(cards, "hdfc_millennia")
+        r = calculate_rewards(card, "online_shopping", 5000)
+
+        # Mirror the exact badge logic from app.py
+        if r["verified"] and not r["uncertainty_flag"]:
+            if r.get("rate_scope") == "selected_merchants":
+                badge = "✓ Selected merchants"
+            else:
+                badge = "✓ Verified"
+        else:
+            badge = "⚠ Unverified"
+
+        assert badge == "✓ Selected merchants", (
+            f"Expected '✓ Selected merchants' for HDFC online_shopping, got '{badge}'"
+        )
+
+    def test_badge_for_all_transactions_is_verified(self):
+        """Standard all-transactions verified rate shows '✓ Verified'."""
+        cards = _static_cards()
+        card = _get(cards, "axis_ace")
+        r = calculate_rewards(card, "online_shopping", 5000)
+
+        if r["verified"] and not r["uncertainty_flag"]:
+            badge = "✓ Selected merchants" if r.get("rate_scope") == "selected_merchants" else "✓ Verified"
+        else:
+            badge = "⚠ Unverified"
+
+        assert badge == "✓ Verified"
+
+    # ── category_rate_scope preserved through cache merge ────────────────────
+
+    def test_cache_merge_preserves_category_rate_scope(self):
+        """
+        apply_cache_to_card must not erase category_rate_scope from the static
+        card when it merges cached cashback rates.
+        """
+        import src.cache as cache_mod
+        from src.cache import apply_cache_to_card
+
+        static_card = {
+            "id": "_scope_preserve",
+            "name": "Scope Preserve Card",
+            "bank": "Test",
+            "annual_fee_inr": 500,
+            "rewards": {
+                "verified": True,
+                "uncertainty_flag": False,
+                "reward_unit": "percent_cashback",
+                "cashback_rates": {"online_shopping": 5.0, "other": 1.0},
+                "category_rate_scope": {"online_shopping": "selected_merchants"},
+                "selected_merchants_note": "5% on Amazon only.",
+                "monthly_cashback_cap_inr": None,
+                "source_url": "https://example.com",
+            },
+            "eligibility": {},
+        }
+
+        fake_entry = {
+            "card_id": "_scope_preserve",
+            "card_name": "Scope Preserve Card",
+            "query": "test",
+            "raw_answer": "confirmed 5% on online shopping",
+            "sources": [{"title": "Official", "url": "https://example.com",
+                          "snippet": "5%", "source_type": "official"}],
+            "retrieved_at": "2026-01-01T00:00:00+00:00",
+            "evidence_summary": [],
+            "structured": {
+                "annual_fee_inr": None,
+                "joining_fee_inr": None,
+                "fee_waiver_condition": None,
+                "reward_unit": "percent_cashback",
+                "cashback_rates": {"online_shopping": 5.0},  # cache confirms rate
+                "reward_points_per_100_inr": None,
+                "point_value_inr": None,
+                "monthly_cashback_cap_inr": None,
+                "eligibility": {"min_age": None, "max_age": None,
+                                "min_income_monthly_inr": None, "credit_score_min": None,
+                                "employment_types": None},
+                "exclusions": None,
+                "key_benefits": None,
+                "uncertainty_flags": [],
+            },
+        }
+
+        original = cache_mod.get_cached_entry
+        cache_mod.get_cached_entry = lambda cid: fake_entry if cid == "_scope_preserve" else None
+        try:
+            merged = apply_cache_to_card(static_card)
+        finally:
+            cache_mod.get_cached_entry = original
+
+        scope = merged["rewards"].get("category_rate_scope", {})
+        assert scope.get("online_shopping") == "selected_merchants", (
+            "category_rate_scope was erased during cache merge"
+        )
+        note = merged["rewards"].get("selected_merchants_note", "")
+        assert "Amazon" in note, "selected_merchants_note was erased during cache merge"
+
+    def test_hdfc_millennia_scope_survives_cache_merge(self):
+        """End-to-end: HDFC Millennia rate_scope is 'selected_merchants' after cache merge."""
+        cards = load_cards(use_cache=True)
+        hdfc = next(c for c in cards if c["id"] == "hdfc_millennia")
+        r = calculate_rewards(hdfc, "online_shopping", 5000)
+        assert r["rate_scope"] == "selected_merchants"
+        assert r["reward_value_inr"] == 250.0   # arithmetic still correct

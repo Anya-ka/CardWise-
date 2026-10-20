@@ -2,57 +2,69 @@
   "hdfc_millennia": {
     "card_id": "hdfc_millennia",
     "card_name": "HDFC Millennia Credit Card",
-    "query": "Research the HDFC Millennia Credit Card. Find its annual fee, renewal fee, cashback rates, eligibility criteria, and fee waiver conditions using official HDFC Bank sources. Clearly identify the source URLs and return null for any fee that cannot be verified from the evidence.",
-    "raw_answer": "# HDFC Millennia Credit Card Research Report\n\nHere is the fee, cashback, and eligibility analysis for the HDFC Millennia Credit Card based on official HDFC Bank sources.\n\n### Fees and Charges\n* **Joining/Annual Fee:** ₹1,000 plus applicable taxes ([Source](https://www.hdfc.bank.in/credit-cards/millennia-credit-card)).\n* **Renewal Fee:** ₹1,000 plus applicable taxes ([Source](https://v.hdfc.bank.in/content/dam/hdfc-aem-microsites/millennia-microsite1/pdfs/CreditCard.pdf)).\n* **Fee Waiver Conditions:** The renewal fee is waived if you spend ₹1,00,000 or more in a year/12 months prior to the renewal date ([Source](https://www.hdfc.bank.in/credit-cards/millennia-credit-card-fees-and-charges), [Source](https://v.hdfc.bank.in/content/dam/hdfc-aem-microsites/millennia-microsite1/pdfs/CreditCard.pdf)).\n\n### Cashback Rates\n* **Cashback Features:** Offers up to 5% cashback on specific online platforms (such as Amazon) and welcome vouchers worth ₹1,000 ([Source](https://vocal.media/journal/hdfc-millennia-credit-card-features-benefits-and-charges-2025)).\n\n### Eligibility Criteria\n* ⚠️ **Specific Criteria:** Specific income, age, or employment criteria are not explicitly detailed in the provided official text snippets. Applicants are required to check their eligibility through the online eligibility calculator on the official HDFC website ([Source](https://www.hdfc.bank.in/credit-cards)).\n\n***\n\n*Disclaimer: Please verify all fees, charges, and terms directly with HDFC Bank before applying, as policies are subject to change.*",
+    "query": "What are the reward rates for HDFC Millennia credit card?",
+    "raw_answer": "Here are the reward rates for the **HDFC Millennia Credit Card** based on official HDFC Bank sources:\n\n### **Reward Rates & Cashback Structure**\n* **5% Cashback:** Earned on specific top online partners—including **Amazon, Flipkart, Myntra, Swiggy, and Zomato** ([HDFC Millennia Credit Card](https://www.hdfcbank.com/personal/pay/cards/millennia-cards/millennia-cc-new)). Additional official documentation notes 5% cashback on spends via **PayZapp and SmartBuy** ([HDFC Millennia Credit Card PDF](https://v.hdfcbank.com/content/dam/hdfc-aem-microsites/millennia-microsite1/pdfs/CreditCard.pdf)).\n* **1% Cashback:** Applicable on all other spends ([HDFC Millennia Credit Card](https://www.hdfcbank.com/personal/pay/cards/millennia-cards/millennia-cc-new)) (including offline expenses, per the [Millennia PDF](https://v.hdfcbank.com/content/dam/hdfc-aem-microsites/millennia-microsite1/pdfs/CreditCard.pdf)). \n\n### **Milestone Benefits**\n* **Quarterly Voucher:** Receive a **₹1,000 worth gift voucher** upon achieving spends of **₹1,00,000 and above** in each calendar quarter ([HDFC Millennia Credit Card PDF](https://www.hdfcbank.com/content/api/contentstream-id/723fb80a-2dde-42a3-9793-7ae1be57c87f/ef2bb403-39aa-46ae-aa45-bcd1ac8a538b)).\n\n***\n\n*Disclaimer: Please verify all reward rates, terms, and capping limits directly with HDFC Bank as policies are subject to change.*",
     "sources": [
       {
-        "title": "Check Millennia Credit Card Fees & Charges",
-        "url": "https://www.hdfc.bank.in/credit-cards/millennia-credit-card/fees-and-charges",
-        "snippet": "Millennia Credit Card Fees & Charges · Renewal fee waived on spending ₹1 lakh or more in a year before renewal date. · Click here(opens in a new tab) for details ..."
-      },
-      {
         "title": "Apply for Millennia Credit Card & Get CashBacks on Spends",
-        "url": "https://www.hdfc.bank.in/credit-cards/millennia-credit-card",
-        "snippet": "The Millennia Credit Card comes with an annual membership fee of ₹1000 plus applicable taxes. However, you can get the renewal fee waived by spending ₹1, ..."
+        "url": "https://www.hdfcbank.com/personal/pay/cards/millennia-cards/millennia-cc-new",
+        "snippet": "5% Cashback on Amazon, Flipkart, Myntra, Swiggy, Zomato and more ₹1000 worth gift voucher on spends of ₹1 Lakh per calendar quarter 1% CashBack on other spend",
+        "source_type": "official"
       },
       {
-        "title": "MILLENNIA CREDIT CARD.",
-        "url": "https://v.hdfc.bank.in/content/dam/hdfc-aem-microsites/millennia-microsite1/pdfs/CreditCard.pdf",
-        "snippet": "Renewal Membership Fee – Rs. 1000/- + Applicable Taxes. Spend Rs. 1,00,000 in 12 Months and get Renewal Fee waived for next renewal year. D) How can a ..."
+        "title": "HDFC Bank Millennia Credit Card",
+        "url": "https://www.hdfcbank.com/content/api/contentstream-id/723fb80a-2dde-42a3-9793-7ae1be57c87f/ef2bb403-39aa-46ae-aa45-bcd1ac8a538b",
+        "snippet": "Earn 5% CashBack from 10 Online Merchants. o Earn 1% CashBack even on other spends 4) worth gift voucher on spends of ₹1,00,000 and above in each calendar ...",
+        "source_type": "official"
       },
       {
-        "title": "HDFC Millennia Credit Card Charges, Fees & Joining Fee",
-        "url": "https://www.airtel.in/finance/credit-card/hdfc-bank-millennia-credit-card-fees-charges",
-        "snippet": "Check HDFC Millennia Credit Card charges, annual fee, joining fee, interest rates, and fee waiver details to understand the card's complete cost structure."
-      },
-      {
-        "title": "Hdfc millenia credit card renewal fee : r/CreditCardsIndia",
-        "url": "https://www.reddit.com/r/CreditCardsIndia/comments/1d43uks/hdfc_millenia_credit_card_renewal_fee/",
-        "snippet": "In the bill cycle of May '24, I have been charged with the annual renewal fee of 1000+GST. Is there any way of waiving off the renewal fee as I ..."
+        "title": "Millennia Credit Card Benefits & Why You Need it",
+        "url": "https://www.hdfcbank.com/personal/resources/learning-centre/pay/know-what-is-millennia-credit-card-and-its-top-4-benefits",
+        "snippet": "Cardholders earn 1% cashback on all expenses, Spending ₹1 lakh per quarter earns a ₹1000 gift voucher. up to 20% discount life",
+        "source_type": "official"
       },
       {
         "title": "Apply for Credit Card Online & Get Instant Approval",
-        "url": "https://www.hdfc.bank.in/credit-cards",
-        "snippet": "Apply for Credit Card Online · 1. Go to our website > > Credit Card page. · 2. Check your eligibility through the online eligibility calculator. · 3. Get the right ..."
+        "url": "https://www.hdfcbank.com/personal/pay/cards/credit-cards",
+        "snippet": "Features · 10x Cashpoints On Select Merchants · Get Additional 10% Off Via Swiggy Dineout · Up To 50 Days Of Interest Free Period ...",
+        "source_type": "official"
       },
       {
-        "title": "HDFC Millennia Credit Card Lifetime FREE (2025 Review) ...",
-        "url": "https://www.youtube.com/watch?v=nefyXQM3tas",
-        "snippet": "Joining & Annual Fees of HDFC Millennia Credit Card 5. Eligibility Criteria to apply HDFC Millennia Credit Card 6. Rewards points structure ..."
+        "title": "Know Features & Benefits of Millennia Debit Card",
+        "url": "https://www.hdfcbank.com/personal/pay/cards/millennia-cards/millennia-debit-card",
+        "snippet": "5% CashBack on shopping via PayZapp(opens ・ 2.5% CashBack points on all online spends 1% CashBack ・ 2.5% CashBack points on all online Spends 1% Rewards: Get ...",
+        "source_type": "official"
       },
       {
-        "title": "HDFC Millennia Credit Card: Features, Benefits & Charges ...",
-        "url": "https://vocal.media/journal/hdfc-millennia-credit-card-features-benefits-and-charges-2025",
-        "snippet": "Cashback up to 5% on online platforms; Welcome vouchers worth ₹1,000 · You earn 5% cashback on: Amazon · Joining Fee: ₹1,000 + GST; Annual Fee: ₹1,000 + GST ( ..."
+        "title": "MILLENNIA CREDIT CARD.",
+        "url": "https://v.hdfcbank.com/content/dam/hdfc-aem-microsites/millennia-microsite1/pdfs/CreditCard.pdf",
+        "snippet": "Earn 5% cashback on spends done via PayZapp and SmartBuy 5% CashBack on shopping via & 2.5% CashBack on all online spends 1% CashBack on all offline spends and ...",
+        "source_type": "official"
+      },
+      {
+        "title": "Millennia Credit Card Eligibility Criteria",
+        "url": "https://v.hdfcbank.com/htdocs/amp/credit_card/millenia_eligibility.html",
+        "snippet": "₹25,000 Self Employed Indian nationality. ₹6.0 Lakhs per annum. Bill Redeem Reward Points Credit Card Rewards Program. Rewards redemption process. Interest ...",
+        "source_type": "official"
+      },
+      {
+        "title": "Check Millennia Credit Card Fees & Charges",
+        "url": "https://www.hdfcbank.com/personal/pay/cards/millennia-cards/millennia-cc-new/fees-and-charges",
+        "snippet": "Check out Millennia Credit Card annual fees and charges. Know the joining/renewal fee and learn how can you get the annual charges waived off.",
+        "source_type": "official"
       }
     ],
-    "retrieved_at": "2026-10-20T15:02:22.023975+00:00",
+    "retrieved_at": "2026-10-20T17:37:34.474925+00:00",
     "structured": {
-      "annual_fee_inr": 1000,
-      "joining_fee_inr": 1000,
-      "fee_waiver_condition": "Renewal fee waived if you spend Rs. 1,00,000 or more in 12 months prior to the renewal date.",
-      "reward_unit": null,
-      "cashback_rates": null,
+      "annual_fee_inr": null,
+      "joining_fee_inr": null,
+      "fee_waiver_condition": null,
+      "reward_unit": "percent_cashback",
+      "cashback_rates": {
+        "online_shopping": 5.0,
+        "dining": 5.0,
+        "other": 1.0
+      },
       "reward_points_per_100_inr": null,
       "point_value_inr": null,
       "monthly_cashback_cap_inr": null,
@@ -65,12 +77,34 @@
       },
       "exclusions": null,
       "key_benefits": [
-        "Welcome vouchers worth Rs. 1,000"
+        "5% Cashback on Amazon, Flipkart, Myntra, Swiggy, Zomato, PayZapp and SmartBuy",
+        "1% Cashback on other spends",
+        "₹1,000 worth gift voucher on spends of ₹1,00,000 and above in each calendar quarter"
       ],
-      "uncertainty_flags": [
-        "cashback_rates"
-      ]
-    }
+      "uncertainty_flags": []
+    },
+    "evidence_summary": [
+      {
+        "field": "reward_unit",
+        "label": "Reward type",
+        "value": "percent_cashback",
+        "status": "supported",
+        "source_quality": "official",
+        "uncertainty": false
+      },
+      {
+        "field": "cashback_rates",
+        "label": "Cashback rates",
+        "value": {
+          "online_shopping": 5.0,
+          "dining": 5.0,
+          "other": 1.0
+        },
+        "status": "supported",
+        "source_quality": "official",
+        "uncertainty": false
+      }
+    ]
   },
   "icici_amazon_pay": {
     "card_id": "icici_amazon_pay",

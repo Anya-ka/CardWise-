@@ -29,9 +29,16 @@
         "wallet_loads": 5.0,
         "other": 1.0
       },
+      "category_rate_scope": {
+        "online_shopping": "selected_merchants",
+        "dining": "selected_merchants",
+        "entertainment": "selected_merchants",
+        "wallet_loads": "selected_merchants"
+      },
+      "selected_merchants_note": "5% applies only to Amazon, Flipkart, Myntra, Swiggy, Zomato, PayZapp and SmartBuy. Other online/dining spends earn 1%.",
       "reward_unit": "percent_cashback",
       "monthly_cashback_cap_inr": 1000,
-      "notes": "5% cashback capped at ₹1,000/month across all 5% categories combined."
+      "notes": "5% cashback capped at ₹1,000/month across all 5% categories combined. 5% applies only to ~10 named partner merchants; all other spends earn 1%."
     },
     "key_benefits": [
       "5% cashback on Amazon, Flipkart, Myntra, Swiggy, Zomato and more",

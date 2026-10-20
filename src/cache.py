@@ -190,6 +190,60 @@ def _extract_structured(card_name: str, raw_answer: str, sources: list[dict] | N
 
 # ── Public API ─────────────────────────────────────────────────────────────────
 
+def _build_evidence_summary(structured: dict, sources: list[dict]) -> list[dict]:
+    """
+    Build a human-readable list of extracted facts for the UI Evidence panel.
+
+    Each item:
+        field (str)         — field name, e.g. "annual_fee_inr"
+        label (str)         — display label
+        value               — extracted value (or None)
+        status (str)        — "supported", "unverified", or "missing"
+        source_quality (str)— "official", "aggregator", "third_party", or "mixed"
+        uncertainty (bool)  — True if in uncertainty_flags
+    """
+    if not structured:
+        return []
+
+    uncertain = set(structured.get("uncertainty_flags", []))
+
+    # Determine best source quality from sources list
+    types = [s.get("source_type", "third_party") for s in sources if s.get("url")]
+    if "official" in types:
+        top_quality = "official"
+    elif "aggregator" in types:
+        top_quality = "aggregator"
+    else:
+        top_quality = "third_party"
+
+    def _item(field: str, label: str, value) -> dict:
+        if value is None:
+            status = "missing"
+        elif field in uncertain:
+            status = "unverified"
+        else:
+            status = "supported"
+        return {
+            "field": field,
+            "label": label,
+            "value": value,
+            "status": status,
+            "source_quality": top_quality,
+            "uncertainty": field in uncertain,
+        }
+
+    items = [
+        _item("annual_fee_inr",         "Annual fee (₹)",        structured.get("annual_fee_inr")),
+        _item("fee_waiver_condition",    "Fee waiver condition",   structured.get("fee_waiver_condition")),
+        _item("reward_unit",             "Reward type",            structured.get("reward_unit")),
+        _item("cashback_rates",          "Cashback rates",         structured.get("cashback_rates")),
+        _item("reward_points_per_100_inr","Points per ₹100",       structured.get("reward_points_per_100_inr")),
+        _item("monthly_cashback_cap_inr","Monthly cashback cap(₹)",structured.get("monthly_cashback_cap_inr")),
+    ]
+    # Only include non-missing items plus items that are explicitly uncertain
+    return [i for i in items if i["status"] != "missing"]
+
+
 def save_research_result(
     card_id: str,
     card_name: str,
@@ -220,6 +274,8 @@ def save_research_result(
         "sources":      sources,
         "retrieved_at": datetime.now(timezone.utc).isoformat(),
         "structured":   structured,
+        # evidence_summary: human-readable list of extracted facts with source quality
+        "evidence_summary": _build_evidence_summary(structured, sources),
     }
 
     cache[card_id] = entry
@@ -274,6 +330,14 @@ def apply_cache_to_card(card: dict) -> dict:
                 static_cb[cat] = rate
                 cb_was_applied = True
         rewards["cashback_rates"] = static_cb
+    # Preserve category_rate_scope from static card — cache cannot know which
+    # transactions qualify for merchant-restricted rates, so never erase this.
+    if card.get("rewards", {}).get("category_rate_scope"):
+        rewards.setdefault("category_rate_scope",
+                           card["rewards"]["category_rate_scope"])
+    if card.get("rewards", {}).get("selected_merchants_note"):
+        rewards.setdefault("selected_merchants_note",
+                           card["rewards"]["selected_merchants_note"])
 
     cached_pts = s.get("reward_points_per_100_inr")
     pts_was_applied = False
